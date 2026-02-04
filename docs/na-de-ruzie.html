@@ -2,12 +2,12 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <title>Webhook Test</title>
+  <title>n8n Webhook Test</title>
   <style>
-    body { font-family: Arial; padding: 40px; background:#f5f7fa; }
-    .card { background:white; padding:30px; border-radius:12px; max-width:500px; margin:auto; box-shadow:0 4px 15px rgba(0,0,0,0.1);}
-    input, textarea { width:100%; padding:10px; margin:10px 0; border-radius:8px; border:1px solid #ccc; }
-    button { background:#667eea; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:16px;}
+    body { font-family: Arial, sans-serif; background:#f5f7fa; padding:40px; }
+    .card { max-width:500px; margin:auto; background:white; padding:30px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.1); }
+    input, textarea { width:100%; padding:10px; margin:10px 0; border-radius:8px; border:1px solid #ccc; font-size:14px; }
+    button { background:#667eea; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:16px; }
     button:hover { opacity:0.9; }
     #status { margin-top:15px; font-weight:bold; }
   </style>
@@ -37,21 +37,19 @@ async function verstuur() {
   };
 
   try {
-    const response = await fetch("http://localhost:5678/webhook/test-reflectie", {
+    const response = await fetch("http://localhost:5678/webhook-test/cf290731-8abe-41d2-947d-9dd397757d1e", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     });
 
-    const result = await response.text();
-    status.innerText = "✅ Verzonden naar n8n!";
-    console.log("Webhook response:", result);
+    const text = await response.text();
+    console.log("Webhook response:", text);
 
+    status.innerText = "✅ Data ontvangen door n8n!";
   } catch (error) {
     console.error(error);
-    status.innerText = "❌ Fout bij versturen";
+    status.innerText = "❌ Fout — draait n8n nog?";
   }
 }
 </script>
