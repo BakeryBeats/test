@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Na de Ruzie – Wat Voel Ik Echt?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #5a6c7d;
+            font-size: 1.1em;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dfe6ed;
+            transition: all 0.3s;
+        }
+
+        .step-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
+        .step-dot.completed {
+            background: #48bb78;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .intro-text {
+            color: #5a6c7d;
+            margin-bottom: 30px;
+            font-size: 1.05em;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e8eef5;
+            border-radius: 12px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            margin: 20px 0;
+        }
+
+        .checkbox-item {
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e8eef5;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e8eef5;
+            border-radius: 12px;
+            font-size: 1em;
+            font-family: inherit;
+            margin: 10px 0;
+            transition: border-color 0.3s;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9ff;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .insight-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .insight-card p {
+            color: #2c3e50;
+            font-size: 1.05em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #5a6c7d;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .social-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .whatsapp { background: #25D366; }
+        .twitter { background: #1DA1F2; }
+        .share { background: #667eea; }
+
+        .helper-text {
+            color: #718096;
+            font-size: 0.9em;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .closing-text {
+            background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+            border-left: 4px solid #fc8181;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #2d3748;
+            font-size: 1.05em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Na de Ruzie – Wat Voel Ik Echt? 💭</h1>
+            <p>Helderheid over je gevoelens, behoeften en grenzen</p>
+        </div>
+
+        <!-- Step 0: Intro -->
+        <div id="step0" class="card">
+            <h2>Welkom 💝</h2>
+            <p class="intro-text">
+                Voel je je verward of overweldigd na een ruzie? Deze tool begeleidt je stap voor stap om je emoties te begrijpen en te verwerken. 
+            </p>
+            <p class="intro-text">
+                Je hoeft niets op te lossen. Deze reflectie is alleen voor jou – om helderheid te krijgen over wat je écht voelt en nodig hebt.
+            </p>
+            <button class="btn" onclick="startReflection()">Start mijn reflectie</button>
+        </div>
+
+        <!-- Step 1: Situatie -->
+        <div id="step1" class="card hidden">
+            <div class="step-indicator">
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+            </div>
+            <h2>Wat is er gebeurd?</h2>
+            <p class="intro-text">Beschrijf in je eigen woorden wat er gebeurde. Voel je vrij om alles te typen, ook als het chaotisch is.</p>
+            <textarea id="situationText" placeholder="Typ hier je verhaal..."></textarea>
+            <p class="helper-text">Dit blijft privé. Niemand anders ziet dit.</p>
+            <button class="btn" onclick="nextStep(1)">Volgende</button>
+        </div>
+
+        <!-- Step 2: Emoties -->
+        <div id="step2" class="card hidden">
+            <div class="step-indicator">
+                <div class="step-dot completed"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+            </div>
+            <h2>Wat blijft het meest hangen?</h2>
+            <p class="intro-text">Selecteer wat het meest resoneert (je mag meerdere kiezen):</p>
+            <div class="checkbox-group">
+                <label class="checkbox-item">
+                    <input type="checkbox" name="emotion" value="wat_gezegd_werd">
+                    <span>Wat er gezegd werd</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" name="emotion" value="hoe_gezegd_werd">
+                    <span>Hoe het gezegd werd</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" name="emotion" value="kon_niet_zeggen">
+                    <span>Wat ik niet kon zeggen</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" name="emotion" value="niet_begrepen">
+                    <span>Dat ik me niet begrepen voel</span>
+                </label>
+            </div>
+            <button class="btn" onclick="nextStep(2)">Volgende</button>
+        </div>
+
+        <!-- Step 3: Behoeften -->
+        <div id="step3" class="card hidden">
+            <div class="step-indicator">
+                <div class="step-dot completed"></div>
+                <div class="step-dot completed"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+            </div>
+            <h2>Wat had je nodig?</h2>
+            <p class="intro-text">Deze vragen helpen je ontdekken wat er onder de oppervlakte speelt:</p>
+            <label style="display: block; margin: 20px 0 8px; color: #2c3e50; font-weight: 600;">Wat had je in dat moment nodig?</label>
+            <input type="text" class="text-input" id="needInput" placeholder="Bijvoorbeeld: begrip, ruimte, erkenning...">
+            
+            <label style="display: block; margin: 30px 0 8px; color: #2c3e50; font-weight: 600;">Welke grens werd geraakt?</label>
+            <input type="text" class="text-input" id="boundaryInput" placeholder="Bijvoorbeeld: mijn rust, mijn waardigheid, mijn tijd...">
+            
+            <button class="btn" onclick="generateInsights()">Ontvang mijn inzicht</button>
+        </div>
+
+        <!-- Step 4: Inzichten -->
+        <div id="step4" class="card hidden">
+            <div class="step-indicator">
+                <div class="step-dot completed"></div>
+                <div class="step-dot completed"></div>
+                <div class="step-dot completed"></div>
+                <div class="step-dot active"></div>
+            </div>
+            <div id="loadingSection" class="loading">
+                <div class="spinner"></div>
+                <p>Ik verwerk je reflectie met zorg...</p>
+            </div>
+            <div id="insightsSection" class="hidden">
+                <h2>Jouw helderheid 🌟</h2>
+                <div id="insightCards"></div>
+                <div class="closing-text">
+                    Je hoeft nu niets op te lossen. Alleen deze erkenning is al waardevol. Je mag voelen wat je voelt.
+                </div>
+                <button class="btn" onclick="downloadPDF()">Download als PDF</button>
+                <button class="btn btn-secondary" onclick="shareReflection()" style="margin-top: 10px;">Deel dit format</button>
+                <button class="btn btn-secondary" onclick="startOver()" style="margin-top: 10px;">Nieuwe reflectie</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Gedeeld met liefde 💖</p>
+            <div class="social-buttons" id="socialButtons" style="display: none;">
+                <a href="#" class="social-btn whatsapp" onclick="shareWhatsApp()">WhatsApp</a>
+                <a href="#" class="social-btn twitter" onclick="shareTwitter()">Twitter</a>
+                <a href="#" class="social-btn share" onclick="shareGeneric()">Delen</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let reflectionData = {
+            situation: '',
+            emotions: [],
+            need: '',
+            boundary: '',
+            insights: null
+        };
+
+        function startReflection() {
+            document.getElementById('step0').classList.add('hidden');
+            document.getElementById('step1').classList.remove('hidden');
+        }
+
+        function nextStep(currentStep) {
+            if (currentStep === 1) {
+                const situation = document.getElementById('situationText').value.trim();
+                if (!situation) {
+                    alert('Typ alsjeblieft eerst je verhaal.');
+                    return;
+                }
+                reflectionData.situation = situation;
+                document.getElementById('step1').classList.add('hidden');
+                document.getElementById('step2').classList.remove('hidden');
+            } else if (currentStep === 2) {
+                const checked = document.querySelectorAll('input[name="emotion"]:checked');
+                if (checked.length === 0) {
+                    alert('Selecteer alsjeblieft wat het meest resoneert.');
+                    return;
+                }
+                reflectionData.emotions = Array.from(checked).map(cb => cb.value);
+                document.getElementById('step2').classList.add('hidden');
+                document.getElementById('step3').classList.remove('hidden');
+            }
+        }
+
+        async function generateInsights() {
+            const need = document.getElementById('needInput').value.trim();
+            const boundary = document.getElementById('boundaryInput').value.trim();
+            
+            if (!need || !boundary) {
+                alert('Vul alsjeblieft beide vragen in.');
+                return;
+            }
+
+            reflectionData.need = need;
+            reflectionData.boundary = boundary;
+
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+            document.getElementById('loadingSection').classList.remove('hidden');
+            document.getElementById('insightsSection').classList.add('hidden');
+
+            // AI call to generate insights
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1000,
+                        messages: [{
+                            role: 'user',
+                            content: `Je bent een zachte, empathische begeleider die mensen helpt na een ruzie. Op basis van hun reflectie geef je een liefdevol overzicht van hun gevoelens, behoeften en grenzen.
+
+Situatie: ${reflectionData.situation}
+
+Wat het meest hing: ${reflectionData.emotions.map(e => e.replace(/_/g, ' ')).join(', ')}
+
+Behoefte: ${reflectionData.need}
+
+Grens die geraakt werd: ${reflectionData.boundary}
+
+Geef een zacht, begripvol overzicht in het Nederlands met deze structuur (gebruik JSON format):
+{
+  "gevoel": "Een korte, zachte samenvatting van de emoties (2-3 zinnen)",
+  "behoefte": "Wat deze persoon echt nodig had (2-3 zinnen)",
+  "grens": "Welke grens werd overschreden en waarom dat belangrijk is (2-3 zinnen)",
+  "erkenning": "Een zachte, validerende afsluiting (1-2 zinnen)"
+}
+
+Wees lief, niet-veroordelend, en help deze persoon hun ervaring te erkennen.`
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                const textContent = data.content.find(item => item.type === 'text').text;
+                
+                // Extract JSON from response
+                const jsonMatch = textContent.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    reflectionData.insights = JSON.parse(jsonMatch[0]);
+                    displayInsights();
+                } else {
+                    throw new Error('Could not parse AI response');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Fallback insights
+                reflectionData.insights = {
+                    gevoel: "Je voelt je waarschijnlijk gekwetst en niet gehoord. Het is moeilijk als je het gevoel hebt dat je perspectief niet werd begrepen.",
+                    behoefte: `Je had ${reflectionData.need} nodig. Deze behoefte is fundamenteel en volkomen geldig.`,
+                    grens: `Je grens rond ${reflectionData.boundary} werd geraakt. Het is belangrijk dat je deze grens erkent en respecteert.`,
+                    erkenning: "Deze gevoelens zijn echt en mogen er zijn. Je mag jezelf de tijd en ruimte geven om te voelen wat je voelt."
+                };
+                displayInsights();
+            }
+        }
+
+        function displayInsights() {
+            document.getElementById('loadingSection').classList.add('hidden');
+            document.getElementById('insightsSection').classList.remove('hidden');
+            document.getElementById('socialButtons').style.display = 'flex';
+
+            const cardsHTML = `
+                <div class="insight-card">
+                    <h3>💭 Wat je voelde</h3>
+                    <p>${reflectionData.insights.gevoel}</p>
+                </div>
+                <div class="insight-card">
+                    <h3>🤲 Wat je nodig had</h3>
+                    <p>${reflectionData.insights.behoefte}</p>
+                </div>
+                <div class="insight-card">
+                    <h3>🛡️ Je grens</h3>
+                    <p>${reflectionData.insights.grens}</p>
+                </div>
+                <div class="insight-card">
+                    <h3>✨ Erkenning</h3>
+                    <p>${reflectionData.insights.erkenning}</p>
+                </div>
+            `;
+
+            document.getElementById('insightCards').innerHTML = cardsHTML;
+        }
+
+        function downloadPDF() {
+            const summary = `NA DE RUZIE - MIJN REFLECTIE
+
+WAT ER GEBEURDE:
+${reflectionData.situation}
+
+WAT IK VOELDE:
+${reflectionData.insights.gevoel}
+
+WAT IK NODIG HAD:
+${reflectionData.insights.behoefte}
+
+MIJN GRENS:
+${reflectionData.insights.grens}
+
+ERKENNING:
+${reflectionData.insights.erkenning}
+
+---
+Gemaakt met "Na de Ruzie" reflectie tool
+`;
+            
+            const blob = new Blob([summary], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mijn-reflectie.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function shareWhatsApp() {
+            const text = "Ik heb zojuist een reflectie gedaan na een ruzie en het heeft me echt geholpen. Probeer deze tool: [link]";
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareTwitter() {
+            const text = "Na een ruzie helderheid krijgen over je emoties, behoeften en grenzen. Deze tool hielp me. 💭";
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareGeneric() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Na de Ruzie - Reflectie Tool',
+                    text: 'Deze tool helpt je helderheid te krijgen na een conflict',
+                    url: window.location.href
+                });
+            } else {
+                alert('Kopieer deze link om te delen: ' + window.location.href);
+            }
+        }
+
+        function shareReflection() {
+            alert('Vond je dit format waardevol? Deel het met vrienden die hier ook baat bij kunnen hebben! Gebruik de knoppen hieronder om te delen.');
+        }
+
+        function startOver() {
+            if (confirm('Weet je zeker dat je een nieuwe reflectie wilt starten?')) {
+                reflectionData = {
+                    situation: '',
+                    emotions: [],
+                    need: '',
+                    boundary: '',
+                    insights: null
+                };
+                document.getElementById('situationText').value = '';
+                document.getElementById('needInput').value = '';
+                document.getElementById('boundaryInput').value = '';
+                document.querySelectorAll('input[name="emotion"]').forEach(cb => cb.checked = false);
+                
+                document.getElementById('step4').classList.add('hidden');
+                document.getElementById('step0').classList.remove('hidden');
+                document.getElementById('socialButtons').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
