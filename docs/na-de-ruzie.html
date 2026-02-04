@@ -1,69 +1,60 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Make.com Webhook</title>
-<style>
-body { font-family: Arial, sans-serif; padding: 40px; background:#f5f5f5; }
-.container { max-width:500px; margin:0 auto; background:white; padding:30px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.1);}
-h1 { text-align:center; margin-bottom:20px; }
-input, textarea, button { width:100%; padding:10px; margin:10px 0; border-radius:6px; border:1px solid #ccc; font-size:1em; }
-button { background:#667eea; color:white; border:none; cursor:pointer; }
-button:hover { background:#5563c1; }
-.success { color:green; margin-top:10px; }
-.error { color:red; margin-top:10px; }
-</style>
+  <meta charset="UTF-8" />
+  <title>Webhook Test</title>
+  <style>
+    body { font-family: Arial; padding: 40px; background:#f5f7fa; }
+    .card { background:white; padding:30px; border-radius:12px; max-width:500px; margin:auto; box-shadow:0 4px 15px rgba(0,0,0,0.1);}
+    input, textarea { width:100%; padding:10px; margin:10px 0; border-radius:8px; border:1px solid #ccc; }
+    button { background:#667eea; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:16px;}
+    button:hover { opacity:0.9; }
+    #status { margin-top:15px; font-weight:bold; }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h1>Test Make.com Webhook</h1>
-    <label>Naam</label>
-    <input type="text" id="name" placeholder="Jouw naam">
-    
-    <label>Bericht</label>
-    <textarea id="message" placeholder="Typ iets..."></textarea>
-    
-    <button onclick="sendToWebhook()">Verstuur naar Make.com</button>
-    
-    <div id="status"></div>
+
+<div class="card">
+  <h2>Webhook Test naar n8n 🚀</h2>
+
+  <input type="text" id="naam" placeholder="Je naam">
+  <textarea id="bericht" placeholder="Typ een bericht"></textarea>
+
+  <button onclick="verstuur()">Verstuur naar webhook</button>
+
+  <div id="status"></div>
 </div>
 
 <script>
-async function sendToWebhook() {
-    const name = document.getElementById('name').value.trim();
-    const message = document.getElementById('message').value.trim();
-    const statusDiv = document.getElementById('status');
-    statusDiv.textContent = '';
-    if(!name || !message){
-        statusDiv.textContent = 'Vul alles in!';
-        statusDiv.className='error';
-        return;
-    }
+async function verstuur() {
+  const status = document.getElementById("status");
+  status.innerText = "Versturen...";
 
-    const webhookUrl = 'https://hook.us1.make.com/JOUW_WEBHOOK_URL'; // <--- vervang met jouw Make.com URL
+  const data = {
+    naam: document.getElementById("naam").value,
+    bericht: document.getElementById("bericht").value,
+    tijdstip: new Date().toISOString()
+  };
 
-    try {
-        const res = await fetch(webhookUrl, {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ name, message })
-        });
-        if(res.ok){
-            statusDiv.textContent = 'Succesvol verstuurd!';
-            statusDiv.className='success';
-            document.getElementById('name').value='';
-            document.getElementById('message').value='';
-        } else {
-            statusDiv.textContent = 'Fout bij versturen.';
-            statusDiv.className='error';
-        }
-    } catch(err){
-        console.error(err);
-        statusDiv.textContent = 'Fout bij versturen.';
-        statusDiv.className='error';
-    }
+  try {
+    const response = await fetch("http://localhost:5678/webhook/test-reflectie", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.text();
+    status.innerText = "✅ Verzonden naar n8n!";
+    console.log("Webhook response:", result);
+
+  } catch (error) {
+    console.error(error);
+    status.innerText = "❌ Fout bij versturen";
+  }
 }
 </script>
+
 </body>
 </html>
