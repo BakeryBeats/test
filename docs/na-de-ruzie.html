@@ -1,58 +1,121 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <title>n8n Webhook Test</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#f5f7fa; padding:40px; }
-    .card { max-width:500px; margin:auto; background:white; padding:30px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.1); }
-    input, textarea { width:100%; padding:10px; margin:10px 0; border-radius:8px; border:1px solid #ccc; font-size:14px; }
-    button { background:#667eea; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:16px; }
-    button:hover { opacity:0.9; }
-    #status { margin-top:15px; font-weight:bold; }
-  </style>
+<meta charset="UTF-8" />
+<title>AI Webhook Test</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f1117;
+  color: #e4e6eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card {
+  background: #1a1d26;
+  padding: 30px;
+  border-radius: 14px;
+  width: 500px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+}
+
+h2 { text-align:center; }
+
+textarea {
+  width: 100%;
+  height: 100px;
+  background: #11131a;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.primary { background: linear-gradient(135deg,#667eea,#764ba2); color:white; }
+.secondary { background:#2b2f3a; color:#ccc; }
+
+.response {
+  background:#11131a;
+  margin-top:15px;
+  padding:12px;
+  border-radius:8px;
+  min-height:60px;
+  border:1px solid #333;
+}
+
+.status { font-size:14px; margin-top:8px; color:#888; }
+</style>
 </head>
+
 <body>
 
 <div class="card">
-  <h2>Webhook Test naar n8n 🚀</h2>
+  <h2>AI Webhook Test 🌌</h2>
 
-  <input type="text" id="naam" placeholder="Je naam">
-  <textarea id="bericht" placeholder="Typ een bericht"></textarea>
+  <textarea id="bericht" placeholder="Typ iets..."></textarea>
 
-  <button onclick="verstuur()">Verstuur naar webhook</button>
+  <button class="primary" onclick="verstuur()">Stuur naar AI</button>
+  <button class="secondary" onclick="randomText()">Random tekst</button>
 
-  <div id="status"></div>
+  <div class="status" id="status"></div>
+  <div class="response" id="response">AI antwoord verschijnt hier...</div>
 </div>
 
 <script>
+const randomZinnen = [
+  "Waarom voelen ruzies soms zo zwaar?",
+  "Geef me een korte motivatieboost.",
+  "Wat betekent emotionele veiligheid?",
+  "Waarom overdenk ik alles na een gesprek?",
+  "Hoe kan ik rustiger reageren in conflict?"
+];
+
+function randomText() {
+  document.getElementById("bericht").value =
+    randomZinnen[Math.floor(Math.random() * randomZinnen.length)];
+}
+
 async function verstuur() {
   const status = document.getElementById("status");
-  status.innerText = "Versturen...";
+  const responseBox = document.getElementById("response");
+  const tekst = document.getElementById("bericht").value;
 
-  const data = {
-    naam: document.getElementById("naam").value,
-    bericht: document.getElementById("bericht").value,
-    tijdstip: new Date().toISOString()
-  };
+  status.innerText = "AI denkt na...";
+  responseBox.innerText = "";
 
   try {
     const response = await fetch("http://localhost:5678/webhook-test/41b11704-e1ca-4881-9f2f-2add133a847a", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+      body: JSON.stringify({ bericht: tekst })
     });
 
-    const text = await response.text();
-    console.log("Webhook response:", text);
+    const data = await response.text();
+    responseBox.innerText = data;
+    status.innerText = "Klaar ✨";
 
-    status.innerText = "✅ Data ontvangen door n8n!";
   } catch (error) {
+    status.innerText = "Fout — draait n8n?";
     console.error(error);
-    status.innerText = "❌ Fout — draait n8n nog?";
   }
 }
 </script>
 
 </body>
 </html>
+
