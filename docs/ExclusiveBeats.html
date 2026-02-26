@@ -15,7 +15,7 @@ body {
 
 header {
   text-align: center;
-  padding: 100px 20px;
+  padding: 90px 20px;
   background: linear-gradient(135deg,#141622,#1f2233,#0f111a);
 }
 
@@ -26,7 +26,7 @@ header h1 {
 
 header p {
   color: #aaa;
-  max-width: 700px;
+  max-width: 750px;
   margin: auto;
 }
 
@@ -76,7 +76,6 @@ header p {
 iframe {
   border-radius: 10px;
   margin: 10px 0;
-  background: #000;
 }
 
 .button {
@@ -117,79 +116,74 @@ footer {
 <header>
   <h1>Bakery Beats – Exclusive Vault</h1>
   <p>
-    This is the only place where my exclusive beats are available.
-    Each production is sold once only and permanently removed after purchase.
+    This is the only official location for my exclusive beats.
+    Each production is sold once only and removed after purchase.
   </p>
 </header>
 
 <section class="section">
-  <div class="beat-grid">
-
-    <!-- AUTO GENERATED BEATS -->
-
-    <script>
-      const beats = [
-        "1X8CtYwOFyvVLDOJmvCktxhnBeCyfgVnh",
-        "1fqHMH982qvBSQv8kO3RXnzNC2U3GdhDo",
-        "1IA2o38KCbsJzhy7VgqqbZ194doCSPRnF",
-        "1JSXdEtpfTEj58dLcf5CACO5LxLRJ6tKH",
-        "1wDKlCOSPD2V2jK0zoTTKd1-_raZHMft4",
-        "1wWMsyajdqOv5-Vw_9qP6J2lRw5VevGCB",
-        "1Xlch7JaAYrI5f8qfifoOUfZ7eoaMNNAP",
-        "1UuWCmnYRpb0aO0p8hUwcd5BK98qYlqSU",
-        "1v2Y5VhhhjGL4B8rrkfQxuKEu9OMQAR7X",
-        "1mdHyLFDqVejoQeZACPtuz_AC_tJw450Q",
-        "1nDFq7d1H1y97jNJOSIBnXd5Nw5lrQI2Q",
-        "1pYe4lfw53Igb401X0o0fwqNmASzcBwTd",
-        "1T5GzSVjlZGR_e0yPDr-TZrlDZc8rEOkv",
-        "1tEmFApucYokZc8e5fCgbqumNFmbpUBD8",
-        "1QGUyEEunXf5QMPES6WswXYBcHktCqT31",
-        "1Ufpbvr6Dpiw05UvST0Ct_KeelZvZ2Ww1",
-        "1x55GD_CC-DeUJviOeFBHLHCZQFx0RZ34",
-        "1-TfiyMAPonK8cixUywA3ZK2Jl8iRS-CM",
-        "1aR3u3kHx4ufzHAkHzAcbHWQOUU-0XtNr",
-        "1zvDcWKOVcppV1sR13XwW1zPK-da4R2mF",
-        "1ofPzGypJJUXw080G8i6ZOQAfDnAVCJUN",
-        "1mtkJbWhVhLdEtiAXTESlVXPwfJSlujvX",
-        "1w8pM1hxa6ND62-Zcpvb9aZDVLuDk_qIo"
-      ];
-
-      const grid = document.currentScript.parentElement;
-
-      beats.forEach((id, index) => {
-        const card = document.createElement("div");
-        card.className = "beat-card";
-        card.innerHTML = `
-          <div class="badge">1 Available</div>
-          <h3>Exclusive Beat #${index + 1}</h3>
-          <iframe 
-            src="https://drive.google.com/file/d/${id}/preview"
-            width="100%" 
-            height="80"
-            allow="autoplay">
-          </iframe>
-          <a href="mailto:info@elroybakker.nl?subject=Exclusive License Request - Beat ${index + 1}" 
-             class="button">
-             Request Exclusive License
-          </a>
-        `;
-        grid.appendChild(card);
-      });
-    </script>
-
-  </div>
+  <div class="beat-grid" id="beatGrid"></div>
 
   <div class="note">
-    These productions are created using modern AI-assisted workflows
-    and professionally curated, arranged, and finalized by Elroy Bakker.
-    Every beat in this vault is exclusive and not distributed anywhere else.
+    All beats are exclusive releases created by Elroy Bakker.
+    Some productions may use AI-assisted workflows and are professionally curated and finalized.
   </div>
-
 </section>
 
 <footer>
   © 2026 Bakery Beats — Exclusive Vault
 </footer>
+
+<script>
+const beats = [
+
+  {
+    id: "1X8CtYwOFyvVLDOJmvCktxhnBeCyfgVnh",
+    title: "Midnight Echo",
+    bpm: 92,
+    key: "F Minor",
+    mood: "Dark / Emotional"
+  },
+
+  {
+    id: "1fqHMH982qvBSQv8kO3RXnzNC2U3GdhDo",
+    title: "Neon Silence",
+    bpm: 140,
+    key: "D Minor",
+    mood: "Trap / Aggressive"
+  }
+
+  // 🔥 Voeg hier simpel nieuwe beats toe in hetzelfde format
+];
+
+const grid = document.getElementById("beatGrid");
+
+beats.forEach((beat) => {
+  const card = document.createElement("div");
+  card.className = "beat-card";
+
+  card.innerHTML = `
+    <div class="badge">Exclusive</div>
+    <h3>${beat.title}</h3>
+    <p>BPM: ${beat.bpm} | Key: ${beat.key}</p>
+    <p>Mood: ${beat.mood}</p>
+
+    <iframe 
+      src="https://drive.google.com/file/d/${beat.id}/preview"
+      width="100%" 
+      height="90"
+      allow="autoplay">
+    </iframe>
+
+    <a href="mailto:info@elroybakker.nl?subject=Exclusive License Request - ${beat.title}"
+       class="button">
+       Request Exclusive License
+    </a>
+  `;
+
+  grid.appendChild(card);
+});
+</script>
 
 </body>
 </html>
