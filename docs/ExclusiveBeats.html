@@ -32,14 +32,14 @@ header p {
 
 .section {
   padding: 60px 20px;
-  max-width: 1400px;
+  max-width: 1500px;
   margin: auto;
 }
 
 .beat-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
+  gap: 20px;
 }
 
 @media (max-width: 1200px) {
@@ -56,38 +56,38 @@ header p {
 
 .beat-card {
   background: #15161d;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 0 18px rgba(0,0,0,0.6);
   position: relative;
 }
 
 .badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 8px;
+  right: 8px;
   background: #ff3d3d;
-  padding: 5px 10px;
-  border-radius: 10px;
-  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 10px;
   font-weight: bold;
 }
 
 iframe {
-  border-radius: 10px;
-  margin: 10px 0;
+  border-radius: 8px;
+  margin: 8px 0;
 }
 
 .button {
   display: block;
   text-align: center;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 9px;
+  border-radius: 6px;
   background: #2d2f3a;
   color: #fff;
   text-decoration: none;
-  font-size: 14px;
-  margin-top: 8px;
+  font-size: 13px;
+  margin-top: 6px;
   transition: 0.2s;
 }
 
@@ -97,7 +97,7 @@ iframe {
 
 .note {
   margin-top: 50px;
-  font-size: 14px;
+  font-size: 13px;
   color: #888;
   line-height: 1.6;
   text-align: center;
@@ -105,7 +105,7 @@ iframe {
 
 footer {
   text-align: center;
-  padding: 40px;
+  padding: 35px;
   color: #555;
 }
 </style>
@@ -116,8 +116,8 @@ footer {
 <header>
   <h1>Bakery Beats – Exclusive Vault</h1>
   <p>
-    This is the only official location for my exclusive beats.
-    Each production is sold once only and removed after purchase.
+    Official exclusive location. Each beat is sold only once.
+    After purchase, it will be permanently removed.
   </p>
 </header>
 
@@ -125,8 +125,8 @@ footer {
   <div class="beat-grid" id="beatGrid"></div>
 
   <div class="note">
-    All beats are exclusive releases created by Elroy Bakker.
-    Some productions may use AI-assisted workflows and are professionally curated and finalized.
+    All productions are exclusive releases by Elroy Bakker.
+    Some may be created using AI-assisted workflows and professionally finalized.
   </div>
 </section>
 
@@ -136,46 +136,49 @@ footer {
 
 <script>
 const beats = [
-
-  {
-    id: "1X8CtYwOFyvVLDOJmvCktxhnBeCyfgVnh",
-    title: "Midnight Echo",
-    bpm: 92,
-    key: "F Minor",
-    mood: "Dark / Emotional"
-  },
-
-  {
-    id: "1fqHMH982qvBSQv8kO3RXnzNC2U3GdhDo",
-    title: "Neon Silence",
-    bpm: 140,
-    key: "D Minor",
-    mood: "Trap / Aggressive"
-  }
-
-  // 🔥 Voeg hier simpel nieuwe beats toe in hetzelfde format
+"1X8CtYwOFyvVLDOJmvCktxhnBeCyfgVnh",
+"1fqHMH982qvBSQv8kO3RXnzNC2U3GdhDo",
+"1IA2o38KCbsJzhy7VgqqbZ194doCSPRnF",
+"1JSXdEtpfTEj58dLcf5CACO5LxLRJ6tKH",
+"1wDKlCOSPD2V2jK0zoTTKd1-_raZHMft4",
+"1wWMsyajdqOv5-Vw_9qP6J2lRw5VevGCB",
+"1Xlch7JaAYrI5f8qfifoOUfZ7eoaMNNAP",
+"1UuWCmnYRpb0aO0p8hUwcd5BK98qYlqSU",
+"1v2Y5VhhhjGL4B8rrkfQxuKEu9OMQAR7X",
+"1mdHyLFDqVejoQeZACPtuz_AC_tJw450Q",
+"1nDFq7d1H1y97jNJOSIBnXd5Nw5lrQI2Q",
+"1pYe4lfw53Igb401X0o0fwqNmASzcBwTd",
+"1T5GzSVjlZGR_e0yPDr-TZrlDZc8rEOkv",
+"1tEmFApucYokZc8e5fCgbqumNFmbpUBD8",
+"1QGUyEEunXf5QMPES6WswXYBcHktCqT31",
+"1Ufpbvr6Dpiw05UvST0Ct_KeelZvZ2Ww1",
+"1x55GD_CC-DeUJviOeFBHLHCZQFx0RZ34",
+"1-TfiyMAPonK8cixUywA3ZK2Jl8iRS-CM",
+"1aR3u3kHx4ufzHAkHzAcbHWQOUU-0XtNr",
+"1zvDcWKOVcppV1sR13XwW1zPK-da4R2mF",
+"1ofPzGypJJUXw080G8i6ZOQAfDnAVCJUN",
+"1mtkJbWhVhLdEtiAXTESlVXPwfJSlujvX",
+"1w8pM1hxa6ND62-Zcpvb9aZDVLuDk_qIo"
 ];
 
 const grid = document.getElementById("beatGrid");
 
-beats.forEach((beat) => {
+beats.forEach((id, index) => {
   const card = document.createElement("div");
   card.className = "beat-card";
 
   card.innerHTML = `
     <div class="badge">Exclusive</div>
-    <h3>${beat.title}</h3>
-    <p>BPM: ${beat.bpm} | Key: ${beat.key}</p>
-    <p>Mood: ${beat.mood}</p>
+    <h3>Exclusive Beat #${index + 1}</h3>
 
     <iframe 
-      src="https://drive.google.com/file/d/${beat.id}/preview"
+      src="https://drive.google.com/file/d/${id}/preview"
       width="100%" 
-      height="90"
+      height="80"
       allow="autoplay">
     </iframe>
 
-    <a href="mailto:info@elroybakker.nl?subject=Exclusive License Request - ${beat.title}"
+    <a href="mailto:info@elroybakker.nl?subject=Exclusive License Request - Beat ${index + 1}"
        class="button">
        Request Exclusive License
     </a>
