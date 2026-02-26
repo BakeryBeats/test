@@ -15,6 +15,23 @@ body {
   height: 100vh;
 }
 
+  .loader {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #888;
+  border-top: 2px solid #fff;
+  border-radius: 50%;
+  margin-left: 8px;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .card {
   background: #1a1d26;
   padding: 30px;
@@ -95,7 +112,7 @@ async function verstuur() {
   const responseBox = document.getElementById("response");
   const tekst = document.getElementById("bericht").value;
 
-  status.innerText = "AI denkt na...";
+  status.innerHTML = 'AI denkt na <span class="loader"></span>';
   responseBox.innerText = "";
 
   try {
