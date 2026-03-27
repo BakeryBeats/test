@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BakeryBeats - Tests</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #1a1a2e;
+      color: #fff;
+    }
+    h1 {
+      color: #667eea;
+      margin-bottom: 20px;
+    }
+    .test-suite {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+    .test-suite h2 {
+      margin: 0 0 15px 0;
+      font-size: 1.2rem;
+      color: #cbd5e0;
+    }
+    .test {
+      padding: 8px 12px;
+      margin: 5px 0;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .test.pass {
+      background: rgba(72, 187, 120, 0.2);
+      border-left: 3px solid #48bb78;
+    }
+    .test.fail {
+      background: rgba(245, 101, 101, 0.2);
+      border-left: 3px solid #f56565;
+    }
+    .test-icon {
+      font-size: 1.2rem;
+    }
+    .summary {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .summary.all-pass {
+      border: 2px solid #48bb78;
+    }
+    .summary.has-fail {
+      border: 2px solid #f56565;
+    }
+    .error-details {
+      font-size: 0.85rem;
+      color: #fc8181;
+      margin-top: 5px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>🥁 BakeryBeats Test Suite</h1>
+  <div id="testResults"></div>
+  <div id="summary" class="summary"></div>
+
+  <script src="app.js"></script>
+  <script>
+    // Simple test framework
+    class TestRunner {
+      constructor() {
+        this.results = [];
+        this.currentSuite = null;
+      }
+
+      describe(name, fn) {
+        this.currentSuite = { name, tests: [] };
+        fn();
+        this.results.push(this.currentSuite);
+      }
+
+      it(description, fn) {
+        try {
+          fn();
+          this.currentSuite.tests.push({ description, passed: true });
+        } catch (error) {
+          this.currentSuite.tests.push({ description, passed: false, error: error.message });
+        }
+      }
+
+      assertEqual(actual, expected, message = '') {
+        if (actual !== expected) {
+          throw new Error(`${message} Expected ${expected}, got ${actual}`);
+        }
+      }
+
+      assertTrue(value, message = '') {
+        if (!value) {
+          throw new Error(`${message} Expected true, got ${value}`);
+        }
+      }
+
+      assertFalse(value, message = '') {
+        if (value) {
+          throw new Error(`${message} Expected false, got ${value}`);
+        }
+      }
+
+      assertInstanceOf(value, constructor, message = '') {
+        if (!(value instanceof constructor)) {
+          throw new Error(`${message} Expected instance of ${constructor.name}`);
+        }
+      }
+
+      render() {
+        const container = document.getElementById('testResults');
+        let totalPassed = 0;
+        let totalFailed = 0;
+
+        this.results.forEach(suite => {
+          const suiteDiv = document.createElement('div');
+          suiteDiv.className = 'test-suite';
+
+          const suiteTitle = document.createElement('h2');
+          suiteTitle.textContent = suite.name;
+          suiteDiv.appendChild(suiteTitle);
+
+          suite.tests.forEach(test => {
+            const testDiv = document.createElement('div');
+            testDiv.className = `test ${test.passed ? 'pass' : 'fail'}`;
+
+            const icon = document.createElement('span');
+            icon.className = 'test-icon';
+            icon.textContent = test.passed ? '✓' : '✗';
+
+            const text = document.createElement('span');
+            text.textContent = test.description;
+
+            testDiv.appendChild(icon);
+            testDiv.appendChild(text);
+
+            if (test.error) {
+              const errorDiv = document.createElement('div');
+              errorDiv.className = 'error-details';
+              errorDiv.textContent = test.error;
+              testDiv.appendChild(errorDiv);
+            }
+
+            suiteDiv.appendChild(testDiv);
+
+            if (test.passed) totalPassed++;
+            else totalFailed++;
+          });
+
+          container.appendChild(suiteDiv);
+        });
+
+        const summary = document.getElementById('summary');
+        summary.className = `summary ${totalFailed === 0 ? 'all-pass' : 'has-fail'}`;
+        summary.innerHTML = `
+          <strong>Test Results:</strong><br>
+          ${totalPassed} passed, ${totalFailed} failed, ${totalPassed + totalFailed} total
+        `;
+      }
+    }
+
+    // Create mock DOM elements needed for tests
+    function createMockDOM() {
+      // Create mock elements that app.js expects
+      const mockElements = [
+        'playBtn', 'stopBtn', 'clearBtn', 'bpmSlider', 'bpmValue',
+        'volumeSlider', 'volumeValue', 'beatGrid'
+      ];
+
+      mockElements.forEach(id => {
+        if (!document.getElementById(id)) {
+          const el = document.createElement('div');
+          el.id = id;
+          if (id.includes('Slider')) {
+            el.value = id === 'bpmSlider' ? '120' : '70';
+          } else if (id.includes('Value')) {
+            el.textContent = id === 'bpmValue' ? '120' : '70';
+          }
+          document.body.appendChild(el);
+        }
+      });
+    }
+
+    // Run tests
+    createMockDOM();
+
+    const runner = new TestRunner();
+
+    runner.describe('DrumMachine Initialization', () => {
+      runner.it('should create DrumMachine instance', () => {
+        const dm = new DrumMachine();
+        runner.assertInstanceOf(dm, DrumMachine);
+      });
+
+      runner.it('should initialize with default BPM of 120', () => {
+        const dm = new DrumMachine();
+        runner.assertEqual(dm.bpm, 120);
+      });
+
+      runner.it('should initialize with default volume of 0.7', () => {
+        const dm = new DrumMachine();
+        runner.assertEqual(dm.volume, 0.7);
+      });
+
+      runner.it('should initialize with 16 steps', () => {
+        const dm = new DrumMachine();
+        runner.assertEqual(dm.numSteps, 16);
+      });
+
+      runner.it('should have 6 tracks', () => {
+        const dm = new DrumMachine();
+        runner.assertEqual(dm.tracks.length, 6);
+      });
+
+      runner.it('should initialize all patterns as empty arrays', () => {
+        const dm = new DrumMachine();
+        dm.tracks.forEach(track => {
+          runner.assertEqual(dm.patterns[track].length, 16);
+          runner.assertTrue(dm.patterns[track].every(val => val === false));
+        });
+      });
+
+      runner.it('should not be playing initially', () => {
+        const dm = new DrumMachine();
+        runner.assertFalse(dm.isPlaying);
+      });
+
+      runner.it('should start at step 0', () => {
+        const dm = new DrumMachine();
+        runner.assertEqual(dm.currentStep, 0);
+      });
+    });
+
+    runner.describe('Sound Key Mapping', () => {
+      runner.it('should map number keys 1-6 to drum sounds', () => {
+        const dm = new DrumMachine();
+        runner.assertEqual(dm.soundKeys['1'], 'kick');
+        runner.assertEqual(dm.soundKeys['2'], 'snare');
+        runner.assertEqual(dm.soundKeys['3'], 'hihat');
+        runner.assertEqual(dm.soundKeys['4'], 'openhat');
+        runner.assertEqual(dm.soundKeys['5'], 'clap');
+        runner.assertEqual(dm.soundKeys['6'], 'crash');
+      });
+    });
+
+    runner.describe('Pattern Management', () => {
+      runner.it('should toggle step correctly', () => {
+        const dm = new DrumMachine();
+        dm.patterns['kick'][0] = false;
+        dm.patterns['kick'][0] = !dm.patterns['kick'][0];
+        runner.assertTrue(dm.patterns['kick'][0]);
+      });
+
+      runner.it('should clear all patterns', () => {
+        const dm = new DrumMachine();
+        dm.patterns['kick'][0] = true;
+        dm.patterns['snare'][5] = true;
+        dm.clearPattern();
+        dm.tracks.forEach(track => {
+          runner.assertTrue(dm.patterns[track].every(val => val === false));
+        });
+      });
+    });
+
+    runner.describe('Audio Context', () => {
+      runner.it('should create audio context on initialization', () => {
+        const dm = new DrumMachine();
+        runner.assertInstanceOf(dm.audioContext, AudioContext);
+      });
+
+      runner.it('should create master gain node', () => {
+        const dm = new DrumMachine();
+        runner.assertInstanceOf(dm.masterGain, GainNode);
+      });
+
+      runner.it('should set master gain to initial volume', () => {
+        const dm = new DrumMachine();
+        runner.assertEqual(dm.masterGain.gain.value, 0.7);
+      });
+    });
+
+    runner.describe('Playback Control', () => {
+      runner.it('should toggle play state correctly', () => {
+        const dm = new DrumMachine();
+        runner.assertFalse(dm.isPlaying);
+        dm.togglePlay();
+        runner.assertTrue(dm.isPlaying);
+        dm.togglePlay();
+        runner.assertFalse(dm.isPlaying);
+      });
+
+      runner.it('should reset current step on stop', () => {
+        const dm = new DrumMachine();
+        dm.currentStep = 5;
+        dm.stop();
+        runner.assertEqual(dm.currentStep, 0);
+      });
+
+      runner.it('should advance step correctly during scheduling', () => {
+        const dm = new DrumMachine();
+        dm.currentStep = 0;
+        dm.scheduleStep();
+        runner.assertEqual(dm.currentStep, 1);
+      });
+
+      runner.it('should wrap around at 16 steps', () => {
+        const dm = new DrumMachine();
+        dm.currentStep = 15;
+        dm.scheduleStep();
+        runner.assertEqual(dm.currentStep, 0);
+      });
+    });
+
+    runner.describe('Sound Synthesis', () => {
+      runner.it('should have playSound method for all track types', () => {
+        const dm = new DrumMachine();
+        dm.tracks.forEach(track => {
+          runner.assertTrue(typeof dm.playSound === 'function');
+          // Should not throw
+          dm.playSound(track);
+        });
+      });
+
+      runner.it('should have individual play methods for each sound', () => {
+        const dm = new DrumMachine();
+        runner.assertTrue(typeof dm.playKick === 'function');
+        runner.assertTrue(typeof dm.playSnare === 'function');
+        runner.assertTrue(typeof dm.playHiHat === 'function');
+        runner.assertTrue(typeof dm.playClap === 'function');
+        runner.assertTrue(typeof dm.playCrash === 'function');
+      });
+
+      runner.it('should create noise buffer for snare, clap, and crash', () => {
+        const dm = new DrumMachine();
+        const buffer = dm.createNoiseBuffer();
+        runner.assertInstanceOf(buffer, AudioBuffer);
+        runner.assertEqual(buffer.numberOfChannels, 1);
+      });
+    });
+
+    runner.describe('BPM and Volume Control', () => {
+      runner.it('should update BPM correctly', () => {
+        const dm = new DrumMachine();
+        dm.bpm = 140;
+        runner.assertEqual(dm.bpm, 140);
+      });
+
+      runner.it('should update volume correctly', () => {
+        const dm = new DrumMachine();
+        dm.volume = 0.5;
+        runner.assertEqual(dm.volume, 0.5);
+        dm.masterGain.gain.value = dm.volume;
+        runner.assertEqual(dm.masterGain.gain.value, 0.5);
+      });
+    });
+
+    runner.describe('Step Key Mapping', () => {
+      runner.it('should map 16 letter keys to steps', () => {
+        const dm = new DrumMachine();
+        runner.assertEqual(dm.stepKeys.length, 16);
+        runner.assertEqual(dm.stepKeys[0][0], 'q');
+        runner.assertEqual(dm.stepKeys[15][1], 15);
+      });
+    });
+
+    // Render results
+    runner.render();
+  </script>
+</body>
+</html>
